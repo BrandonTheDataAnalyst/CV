@@ -855,22 +855,35 @@
                     <p>Classic paddle game - try to beat the AI!</p>
                 </div>
                 <div class="interest-item" style="cursor: pointer;" onclick="startMemoryGame()">
-                    <h3>🧠 Memory Match</h3>
-                    <p>Test your memory with this card matching game</p>
-                </div>
+    <h3>🧠 Memory Match</h3>
+    <p>Test your memory with this card matching game - flip cards to find matching pairs!</p>
+        </div>
             </div>
 
             <div id="pongContainer" style="display: none; margin-top: 30px;">
-                <h2 style="text-align: center;">Pong Game</h2>
-                <div class="score-display" style="display: block; text-align: center;">
-                    Player: <span id="playerScore">0</span> | AI: <span id="aiScore">0</span>
-                </div>
-                <canvas id="pongCanvas" width="600" height="400" style="display: block;"></canvas>
-                <div class="game-controls" style="text-align: center;">
-                    <p>Use W/S or Arrow Up/Down to move your paddle</p>
-                    <button class="start-game-btn" onclick="location.reload()">Back to Games</button>
-                </div>
-            </div>
+    <h2 style="text-align: center;">Pong Game</h2>
+    <div class="score-display" style="display: block; text-align: center;">
+        Player: <span id="playerScore">0</span> | AI: <span id="aiScore">0</span>
+    </div>
+    <canvas id="pongCanvas" width="600" height="400" style="display: block;"></canvas>
+    <div class="game-controls" style="text-align: center;">
+        <p>Use W/S or Arrow Up/Down to move your paddle</p>
+        <button class="start-game-btn" onclick="stopPongGame()" style="background-color: #f00; margin-right: 10px;">Stop Game</button>
+        <button class="start-game-btn" onclick="location.reload()">Back to Games</button>
+    </div>
+</div>
+
+<div id="memoryContainer" style="display: none; margin-top: 30px;">
+    <h2 style="text-align: center;">Memory Match</h2>
+    <div class="score-display" style="display: block; text-align: center;">
+        Moves: <span id="movesCount">0</span> | Matches: <span id="matchesCount">0</span>
+    </div>
+    <div id="memoryBoard" style="display: grid; grid-template-columns: repeat(4, 100px); gap: 15px; justify-content: center; margin: 30px auto;"></div>
+    <div class="game-controls" style="text-align: center;">
+        <p>Click cards to flip them and find matching pairs!</p>
+        <button class="start-game-btn" onclick="location.reload()">Back to Games</button>
+    </div>
+</div>
 
             <div id="memoryContainer" style="display: none; margin-top: 30px;">
                 <h2 style="text-align: center;">Memory Match</h2>
@@ -972,8 +985,149 @@ setTimeout(() => {
         }
 
         // Download CV
-        function downloadCV() {
-            alert('CV download would be initiated here. Connect this to your actual CV file!');
+        // Download CV
+function downloadCV() {
+    // Create the CV content
+    const cvContent = `BRANDON FEINAUER
+
+CONTACT INFORMATION
+Phone: 082 321 7176
+Email: brandongouws00@gmail.com
+Address: 27 Metz Gardens, Lorraine, Port Elizabeth, South Africa
+ID: 0004205287081
+
+KEY SKILLS
+- Interpersonal skills
+- Communication
+- Leadership
+- Time management
+- Adaptability
+- Determination
+- Decision making
+- Conflict resolution
+- Data Analysis and Engineering Support
+
+INTRODUCTION
+I believe that my work experience being client-focused and people-oriented, combined with my education, computer literacy, and understanding of the business environment, as well as my characteristics of being driven, goal-oriented, adaptable, detail-oriented, and having excellent communication skills with a strong customer focus, makes me someone who not only does what's required in the job description but goes above and beyond.
+
+I am also a person that works well in a team environment and enjoys working together for a common goal.
+
+WORK EXPERIENCE
+
+Data Analysis and Engineering Support
+Genergy - Port Elizabeth, South Africa
+Dec 2023 - Present
+- Full system analysis, ie: powerflow, potential production and current production
+- HTML design for automated reporting and report displaying
+- VBA design for automation in Excel
+- Financial analysis of sites to determine financial performance
+- Use of Excel ie: pivot charts and a wide range of formulas to build custom site reports and analyze data
+- Use of FTP, SSH and APIs for file transfers
+- Use of Python to automate tasks internally and externally (ie: webscraping)
+- Provide administrative and technical support to the engineering office
+- Serve as a point of contact for internal and external communications liaising with clients on report data
+- Python coding used in a wide range of tasks/calculations, ie: automation and/or powerflow
+
+Instructor, Facilitator and Assessor
+Core Capital - Port Elizabeth, South Africa
+Nov 2022 - Nov 2023
+- Instruct clients from various locations around the world, from various different levels, beginner to advanced
+- Grade and assess clients
+- Provide in-depth feedback
+- Attend regular quality meetings
+- Provide administration for team leader
+- Provide feedback to company regarding performance
+
+Facilitator, Assessor and Grader
+Treymar Logistics - Port Elizabeth, South Africa
+Jan 2021 - April 2022
+- Marking and assessing factory workers on heavy machinery
+- Keeping track of licenses
+- Providing safety training when needed
+- Ensuring factory workers are capable of handling the machinery
+
+Representative and Pet Sitter
+Critter Sitters (Part-time) - Port Elizabeth, South Africa
+Oct 2020 - June 2022
+- Market and promote for the business through word of mouth and social media
+- Plan and organize through personal contribution of information & ideas
+- Develop ideas to profit the business & promote it
+- Involved in fundraisers
+- One on one contact with clients to discuss the contract
+
+EDUCATION
+
+Honours Degree in Psychology
+Varsity College - Port Elizabeth, South Africa
+2022 - 2023
+
+Bachelor of Arts in Psychology
+Nelson Mandela University - Port Elizabeth, South Africa
+2019 - 2021
+Extracurriculars:
+- Psychology Club
+- Industrial Psychology Club
+- Member of International Golden Key Honours Society through invite
+
+National Senior Certificate
+Pearson High School - Port Elizabeth, South Africa
+2014 - 2018
+Sport:
+- Swimming: 2014 to 2017
+- Tennis: 2017 to 2018
+Cultural:
+- Toast Masters International: 2017
+- Computer Club: 2014 - 2016
+- Debate Club: 2016 - 2017
+- ECOS: 2017 - 2018
+- Peer Counselling: 2018
+
+EXTRA COURSES
+- Counselling adolescents & children
+- Counselling diploma
+- Diploma for counselling victims of sexual abuse
+- Trauma treatment for children
+- PTSD and trauma management course
+- Practical training as a facilitator for children and young adults via an outreach camp
+- Life-Skills and social work training via FAMSA
+
+INTERESTS AND ACTIVITIES
+- Spending time with my numerous pets
+- Going to the beach
+- Hiking and Camping
+- Volunteering for causes that are close to my heart like animals and children
+- Enjoying a great movie with my wife
+
+REFERENCES
+
+Kevin Slabbert
+COO, Genergy
+Phone: 082 567 9835
+Email: solutions@genergy.co.za
+
+Valentina Longari
+Recruiter, Core Capital
+Phone: 076 849 4890
+
+Miss Tembi
+Youth Coordinator, FAMSA
+Phone: 076 238 3148`;
+
+    // Create a blob with the CV content
+    const blob = new Blob([cvContent], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    
+    // Create a temporary link and trigger download
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Brandon_Feinauer_CV.txt';
+    document.body.appendChild(a);
+    a.click();
+    
+    // Clean up
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+}
         }
 
         // Snake Game
@@ -992,7 +1146,7 @@ setTimeout(() => {
             
             resetGame();
             gameRunning = true;
-            gameLoop = setInterval(updateGame, 100);
+            gameLoop = setInterval(updateGame, 150);
         }
 
         function resetGame() {
@@ -1146,6 +1300,14 @@ setTimeout(() => {
             pongCtx.beginPath();
             pongCtx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
             pongCtx.fill();
+
+        function stopPongGame() {
+    if (pongLoop) {
+        clearInterval(pongLoop);
+        pongRunning = false;
+    }
+    location.reload();
+}
         }
 
         document.addEventListener('keydown', (e) => {
