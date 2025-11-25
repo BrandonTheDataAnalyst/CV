@@ -967,22 +967,41 @@ setTimeout(() => {
         }
 
         // Page Navigation
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-            document.querySelectorAll('nav button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            document.getElementById(pageId).classList.add('active');
-            event.target.classList.add('active');
-            
-            // Close mobile menu after selection
-            document.getElementById('navLinks').classList.remove('active');
-            
-            animateText();
-        }
+function showPage(pageId) {
+    // Hide all pages
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+        page.style.display = 'none';
+    });
+    
+    // Remove active class from all buttons
+    document.querySelectorAll('nav button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Show selected page
+    const selectedPage = document.getElementById(pageId);
+    if (selectedPage) {
+        selectedPage.style.display = 'block';
+        selectedPage.classList.add('active');
+    }
+    
+    // Mark button as active
+    if (event && event.target) {
+        event.target.classList.add('active');
+    }
+    
+    // Close mobile menu after selection
+    const navLinks = document.getElementById('navLinks');
+    if (navLinks) {
+        navLinks.classList.remove('active');
+    }
+    
+    // Scroll to top
+    window.scrollTo(0, 0);
+    
+    animateText();
+}
 
         // Download CV
         // Download CV
