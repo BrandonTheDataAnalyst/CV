@@ -908,13 +908,21 @@
             document.getElementById('navLinks').classList.toggle('active');
         }
 
-        // Loading Screen
-        window.addEventListener('load', function() {
-            setTimeout(() => {
-                document.getElementById('loadingScreen').classList.add('hidden');
-                animateText();
-            }, 1500);
-        });
+       // Loading Screen
+window.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        document.getElementById('loadingScreen').classList.add('hidden');
+        animateText();
+    }, 1000);
+});
+
+// Backup in case DOMContentLoaded already fired
+setTimeout(() => {
+    if (document.getElementById('loadingScreen') && !document.getElementById('loadingScreen').classList.contains('hidden')) {
+        document.getElementById('loadingScreen').classList.add('hidden');
+        animateText();
+    }
+}, 2000);
 
         function animateText() {
             const elements = document.querySelectorAll('h1, h2, h3, p, li, div');
