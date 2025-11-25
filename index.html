@@ -921,19 +921,27 @@
             document.getElementById('navLinks').classList.toggle('active');
         }
 
-       // Loading Screen
-window.addEventListener('DOMContentLoaded', function() {
-    setTimeout(() => {
-        const loadingScreen = document.getElementById('loadingScreen');
-        if (loadingScreen) {
-            loadingScreen.classList.add('hidden');
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
-            }, 500);
-        }
-        animateText();
-    }, 1000);
+       // Loading Screen - Failsafe version
+// Remove loading screen immediately when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    hideLoadingScreen();
 });
+
+// Backup - force hide after 2 seconds no matter what
+setTimeout(function() {
+    hideLoadingScreen();
+}, 2000);
+
+function hideLoadingScreen() {
+    const loadingScreen = document.getElementById('loadingScreen');
+    if (loadingScreen && !loadingScreen.classList.contains('hidden')) {
+        loadingScreen.classList.add('hidden');
+        setTimeout(() => {
+            loadingScreen.style.display = 'none';
+        }, 500);
+        animateText();
+    }
+}
 
         function animateText() {
             const elements = document.querySelectorAll('h1, h2, h3, p, li, div');
