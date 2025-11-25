@@ -16,22 +16,106 @@
             background-color: #000;
             color: #fff;
             overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        body.light-mode {
+            background-color: #f5f5f5;
+            color: #000;
+        }
+
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        #loadingScreen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #333;
+            border-top: 4px solid #0f0;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
         }
 
         .page {
             min-height: 100vh;
             display: none;
             padding: 60px 20px 40px;
-            animation: fadeIn 0.5s ease-in;
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
 
         .page.active {
             display: block;
+            animation: fadeIn 0.5s ease forwards;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .matrix-text {
+            opacity: 0;
+            animation: matrixLoad 0.05s forwards;
+        }
+
+        @keyframes matrixLoad {
+            0% { opacity: 0; color: #0f0; }
+            50% { opacity: 1; color: #0f0; }
+            100% { opacity: 1; color: #fff; }
+        }
+
+        body.light-mode .matrix-text {
+            animation: matrixLoadLight 0.05s forwards;
+        }
+
+        @keyframes matrixLoadLight {
+            0% { opacity: 0; color: #0f0; }
+            50% { opacity: 1; color: #0f0; }
+            100% { opacity: 1; color: #000; }
+        }
+
+        .slide-in {
+            opacity: 0;
+            transform: translateX(-50px);
+            animation: slideIn 0.6s forwards;
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         nav {
@@ -43,10 +127,64 @@
             padding: 15px 20px;
             display: flex;
             justify-content: center;
+            align-items: center;
             gap: 15px;
             flex-wrap: wrap;
             z-index: 1000;
             border-bottom: 1px solid #333;
+            transition: background-color 0.3s ease;
+        }
+
+        body.light-mode nav {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid #ccc;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background-color: transparent;
+            border: 1px solid #555;
+            color: #fff;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 20px;
+            border-radius: 5px;
+            position: absolute;
+            left: 20px;
+        }
+
+        body.light-mode .mobile-menu-toggle {
+            border-color: #999;
+            color: #000;
+        }
+
+        .theme-toggle {
+            background-color: transparent;
+            border: 1px solid #555;
+            color: #fff;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 20px;
+            border-radius: 5px;
+            position: absolute;
+            right: 20px;
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode .theme-toggle {
+            border-color: #999;
+            color: #000;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         nav button {
@@ -60,16 +198,34 @@
             border-radius: 5px;
         }
 
+        body.light-mode nav button {
+            color: #000;
+            border-color: #999;
+        }
+
         nav button:hover {
             background-color: #fff;
             color: #000;
             border-color: #fff;
+            transform: translateY(-2px);
+        }
+
+        body.light-mode nav button:hover {
+            background-color: #000;
+            color: #fff;
+            border-color: #000;
         }
 
         nav button.active {
             background-color: #fff;
             color: #000;
             border-color: #fff;
+        }
+
+        body.light-mode nav button.active {
+            background-color: #000;
+            color: #fff;
+            border-color: #000;
         }
 
         .container {
@@ -84,16 +240,28 @@
             padding-bottom: 10px;
         }
 
+        body.light-mode h1 {
+            border-bottom: 2px solid #000;
+        }
+
         h2 {
             font-size: 1.8em;
             margin: 30px 0 15px;
             color: #fff;
         }
 
+        body.light-mode h2 {
+            color: #000;
+        }
+
         h3 {
             font-size: 1.3em;
             margin: 20px 0 10px;
             color: #ddd;
+        }
+
+        body.light-mode h3 {
+            color: #333;
         }
 
         .intro-section {
@@ -110,6 +278,27 @@
             margin: 5px 0;
         }
 
+        .download-cv-btn {
+            background-color: #0f0;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 20px 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .download-cv-btn:hover {
+            background-color: #0c0;
+            transform: scale(1.05);
+        }
+
         .skills-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -122,6 +311,13 @@
             padding: 15px;
             border-radius: 5px;
             border-left: 3px solid #fff;
+            transition: transform 0.3s ease;
+        }
+
+        body.light-mode .skill-item {
+            background-color: #fff;
+            border-left: 3px solid #000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .experience-item, .education-item, .reference-item {
@@ -130,6 +326,15 @@
             margin: 20px 0;
             border-radius: 5px;
             border-left: 4px solid #fff;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        body.light-mode .experience-item,
+        body.light-mode .education-item,
+        body.light-mode .reference-item {
+            background-color: #fff;
+            border-left: 4px solid #000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
         .job-title {
@@ -143,10 +348,18 @@
             margin-bottom: 5px;
         }
 
+        body.light-mode .company {
+            color: #666;
+        }
+
         .date {
             color: #888;
             font-style: italic;
             margin-bottom: 15px;
+        }
+
+        body.light-mode .date {
+            color: #999;
         }
 
         ul {
@@ -168,11 +381,22 @@
             border-radius: 5px;
             text-align: center;
             border: 1px solid #333;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        body.light-mode .interest-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .interest-item:hover {
             border-color: #fff;
-            transition: all 0.3s ease;
+            transform: translateY(-5px);
+        }
+
+        body.light-mode .interest-item:hover {
+            border-color: #000;
         }
 
         .extra-section {
@@ -182,6 +406,10 @@
             border-radius: 5px;
         }
 
+        body.light-mode .extra-section {
+            background-color: #f0f0f0;
+        }
+
         .reference-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -189,23 +417,184 @@
             margin-top: 20px;
         }
 
+        .game-container {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .game-intro {
+            font-size: 1.2em;
+            line-height: 1.8;
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #1a1a1a;
+            border-radius: 5px;
+            border-left: 4px solid #0f0;
+        }
+
+        body.light-mode .game-intro {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        #gameCanvas, #pongCanvas {
+            border: 2px solid #fff;
+            margin: 20px auto;
+            display: none;
+            background-color: #0a0a0a;
+        }
+
+        body.light-mode #gameCanvas,
+        body.light-mode #pongCanvas {
+            border: 2px solid #000;
+        }
+
+        .start-game-btn {
+            background-color: #0f0;
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .start-game-btn:hover {
+            background-color: #0c0;
+            transform: scale(1.05);
+        }
+
+        .game-controls {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #888;
+        }
+
+        body.light-mode .game-controls {
+            color: #666;
+        }
+
+        .score-display {
+            font-size: 1.5em;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .high-score {
+            color: #0f0;
+        }
+
+        .memory-card {
+            width: 100px;
+            height: 100px;
+            background-color: #1a1a1a;
+            border: 2px solid #fff;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode .memory-card {
+            background-color: #fff;
+            border: 2px solid #000;
+        }
+
+        .memory-card:hover {
+            transform: scale(1.05);
+        }
+
+        .memory-card.flipped {
+            background-color: #0f0;
+            color: #000;
+        }
+
+        .memory-card.matched {
+            background-color: #0c0;
+            color: #000;
+            cursor: default;
+        }
+
         @media (max-width: 768px) {
             h1 { font-size: 2em; }
             nav { padding: 10px; }
+            
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                background-color: rgba(0, 0, 0, 0.98);
+                padding: 20px;
+                border-top: 1px solid #333;
+            }
+
+            body.light-mode .nav-links {
+                background-color: rgba(255, 255, 255, 0.98);
+                border-top: 1px solid #ccc;
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .nav-links button {
+                width: 100%;
+                margin: 5px 0;
+            }
+            
+            .theme-toggle {
+                top: 10px;
+            }
+            
             nav button { padding: 8px 15px; font-size: 12px; }
+            #gameCanvas { width: 300px; height: 300px; }
+            #pongCanvas { width: 300px; height: 200px; }
+            
+            .memory-card {
+                width: 70px;
+                height: 70px;
+                font-size: 1.8em;
+            }
+            
+            #memoryBoard {
+                grid-template-columns: repeat(4, 70px) !important;
+            }
         }
     </style>
 </head>
 <body>
+    <div id="loadingScreen">
+        <div class="loader"></div>
+        <div class="loading-text">Loading Portfolio...</div>
+    </div>
+
     <nav>
-        <button onclick="showPage('about')" class="active">About Me</button>
-        <button onclick="showPage('experience')">Work Experience</button>
-        <button onclick="showPage('education')">Education</button>
-        <button onclick="showPage('interests')">Interests</button>
-        <button onclick="showPage('references')">References</button>
+        <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+        <div class="nav-links" id="navLinks">
+            <button onclick="showPage('about')" class="active">About Me</button>
+            <button onclick="showPage('experience')">Work Experience</button>
+            <button onclick="showPage('education')">Education</button>
+            <button onclick="showPage('interests')">Interests</button>
+            <button onclick="showPage('references')">References</button>
+            <button onclick="showPage('game')" style="border-color: #0f0; color: #0f0;">Bored?</button>
+            <button onclick="showPage('games')" style="border-color: #0f0; color: #0f0;">More Games</button>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
     </nav>
 
-    <!-- About Me Page -->
     <div id="about" class="page active">
         <div class="container">
             <h1>BRANDON FEINAUER</h1>
@@ -215,6 +604,10 @@
                 <div>📧 brandongouws00@gmail.com</div>
                 <div>📍 27 Metz Gardens, Lorraine, Port Elizabeth, South Africa</div>
             </div>
+
+            <button class="download-cv-btn" onclick="downloadCV()">
+                <span>📄</span> Download My CV
+            </button>
 
             <h2>Introduction</h2>
             <div class="intro-section">
@@ -238,7 +631,6 @@
         </div>
     </div>
 
-    <!-- Work Experience Page -->
     <div id="experience" class="page">
         <div class="container">
             <h1>Work Experience</h1>
@@ -302,7 +694,6 @@
         </div>
     </div>
 
-    <!-- Education Page -->
     <div id="education" class="page">
         <div class="container">
             <h1>Education</h1>
@@ -365,7 +756,6 @@
         </div>
     </div>
 
-    <!-- Interests Page -->
     <div id="interests" class="page">
         <div class="container">
             <h1>Interests & Activities</h1>
@@ -394,7 +784,6 @@
         </div>
     </div>
 
-    <!-- References Page -->
     <div id="references" class="page">
         <div class="container">
             <h1>References</h1>
@@ -430,16 +819,386 @@
         </div>
     </div>
 
+    <div id="game" class="page">
+        <div class="container game-container">
+            <h1>Take a Break!</h1>
+            <div class="game-intro">
+                <p>Got bored reading my CV? No stress, take a break and check this out!</p>
+            </div>
+            
+            <div class="score-display" id="scoreDisplay">
+                Score: <span id="currentScore">0</span> | High Score: <span class="high-score" id="highScore">0</span>
+            </div>
+            
+            <button class="start-game-btn" id="startBtn" onclick="startGame()">Start Game</button>
+            
+            <canvas id="gameCanvas" width="400" height="400"></canvas>
+            
+            <div class="game-controls">
+                <p>Use Arrow Keys or WASD to control the snake</p>
+                <p>Eat the green food to grow longer</p>
+                <p>Don't hit the walls or yourself!</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="games" class="page">
+        <div class="container">
+            <h1>More Games!</h1>
+            <div class="game-intro">
+                <p>Choose your game and have some fun!</p>
+            </div>
+            
+            <div class="interests-grid">
+                <div class="interest-item" style="cursor: pointer;" onclick="startPongGame()">
+                    <h3>🏓 Pong</h3>
+                    <p>Classic paddle game - try to beat the AI!</p>
+                </div>
+                <div class="interest-item" style="cursor: pointer;" onclick="startMemoryGame()">
+                    <h3>🧠 Memory Match</h3>
+                    <p>Test your memory with this card matching game</p>
+                </div>
+            </div>
+
+            <div id="pongContainer" style="display: none; margin-top: 30px;">
+                <h2 style="text-align: center;">Pong Game</h2>
+                <div class="score-display" style="display: block; text-align: center;">
+                    Player: <span id="playerScore">0</span> | AI: <span id="aiScore">0</span>
+                </div>
+                <canvas id="pongCanvas" width="600" height="400" style="display: block;"></canvas>
+                <div class="game-controls" style="text-align: center;">
+                    <p>Use W/S or Arrow Up/Down to move your paddle</p>
+                    <button class="start-game-btn" onclick="location.reload()">Back to Games</button>
+                </div>
+            </div>
+
+            <div id="memoryContainer" style="display: none; margin-top: 30px;">
+                <h2 style="text-align: center;">Memory Match</h2>
+                <div class="score-display" style="display: block; text-align: center;">
+                    Moves: <span id="movesCount">0</span> | Matches: <span id="matchesCount">0</span>
+                </div>
+                <div id="memoryBoard" style="display: grid; grid-template-columns: repeat(4, 100px); gap: 15px; justify-content: center; margin: 30px auto;"></div>
+                <div class="game-controls" style="text-align: center;">
+                    <button class="start-game-btn" onclick="location.reload()">Back to Games</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        function showPage(pageName) {
-            const pages = document.querySelectorAll('.page');
-            const buttons = document.querySelectorAll('nav button');
+        // Theme Toggle
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const themeBtn = document.querySelector('.theme-toggle');
+            themeBtn.textContent = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        }
+
+        // Load saved theme
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                document.querySelector('.theme-toggle').textContent = '☀️';
+            }
+        });
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
+
+        // Loading Screen
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hidden');
+                animateText();
+            }, 1500);
+        });
+
+        function animateText() {
+            const elements = document.querySelectorAll('h1, h2, h3, p, li, div');
+            elements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.classList.add('matrix-text');
+                }, index * 20);
+            });
+        }
+
+        // Page Navigation
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.querySelectorAll('nav button').forEach(btn => {
+                btn.classList.remove('active');
+            });
             
-            pages.forEach(page => page.classList.remove('active'));
-            buttons.forEach(button => button.classList.remove('active'));
-            
-            document.getElementById(pageName).classList.add('active');
+            document.getElementById(pageId).classList.add('active');
             event.target.classList.add('active');
+            
+            // Close mobile menu after selection
+            document.getElementById('navLinks').classList.remove('active');
+            
+            animateText();
+        }
+
+        // Download CV
+        function downloadCV() {
+            alert('CV download would be initiated here. Connect this to your actual CV file!');
+        }
+
+        // Snake Game
+        let canvas, ctx, snake, direction, food, score, highScore, gameLoop, gameRunning;
+
+        function startGame() {
+            canvas = document.getElementById('gameCanvas');
+            ctx = canvas.getContext('2d');
+            
+            canvas.style.display = 'block';
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('scoreDisplay').style.display = 'block';
+            
+            highScore = localStorage.getItem('snakeHighScore') || 0;
+            document.getElementById('highScore').textContent = highScore;
+            
+            resetGame();
+            gameRunning = true;
+            gameLoop = setInterval(updateGame, 100);
+        }
+
+        function resetGame() {
+            snake = [{x: 200, y: 200}];
+            direction = {x: 20, y: 0};
+            score = 0;
+            document.getElementById('currentScore').textContent = score;
+            placeFood();
+        }
+
+        function placeFood() {
+            food = {
+                x: Math.floor(Math.random() * 20) * 20,
+                y: Math.floor(Math.random() * 20) * 20
+            };
+        }
+
+        function updateGame() {
+            const head = {x: snake[0].x + direction.x, y: snake[0].y + direction.y};
+            
+            if (head.x < 0 || head.x >= 400 || head.y < 0 || head.y >= 400 || 
+                snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+                gameOver();
+                return;
+            }
+            
+            snake.unshift(head);
+            
+            if (head.x === food.x && head.y === food.y) {
+                score++;
+                document.getElementById('currentScore').textContent = score;
+                if (score > highScore) {
+                    highScore = score;
+                    localStorage.setItem('snakeHighScore', highScore);
+                    document.getElementById('highScore').textContent = highScore;
+                }
+                placeFood();
+            } else {
+                snake.pop();
+            }
+            
+            draw();
+        }
+
+        function draw() {
+            ctx.fillStyle = document.body.classList.contains('light-mode') ? '#f5f5f5' : '#0a0a0a';
+            ctx.fillRect(0, 0, 400, 400);
+            
+            ctx.fillStyle = '#0f0';
+            snake.forEach(segment => {
+                ctx.fillRect(segment.x, segment.y, 18, 18);
+            });
+            
+            ctx.fillStyle = '#f00';
+            ctx.fillRect(food.x, food.y, 18, 18);
+        }
+
+        function gameOver() {
+            clearInterval(gameLoop);
+            gameRunning = false;
+            alert(`Game Over! Your score: ${score}`);
+            canvas.style.display = 'none';
+            document.getElementById('startBtn').style.display = 'inline-flex';
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (!gameRunning) return;
+            
+            if ((e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') && direction.y === 0) {
+                direction = {x: 0, y: -20};
+            } else if ((e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') && direction.y === 0) {
+                direction = {x: 0, y: 20};
+            } else if ((e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') && direction.x === 0) {
+                direction = {x: -20, y: 0};
+            } else if ((e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') && direction.x === 0) {
+                direction = {x: 20, y: 0};
+            }
+        });
+
+        // Pong Game
+        let pongCanvas, pongCtx, pongRunning, pongLoop;
+        let paddle1 = {x: 10, y: 150, width: 10, height: 100, score: 0};
+        let paddle2 = {x: 580, y: 150, width: 10, height: 100, score: 0};
+        let ball = {x: 300, y: 200, radius: 8, dx: 4, dy: 4};
+
+        function startPongGame() {
+            document.querySelector('.interests-grid').style.display = 'none';
+            document.querySelector('.game-intro').style.display = 'none';
+            document.getElementById('pongContainer').style.display = 'block';
+            
+            pongCanvas = document.getElementById('pongCanvas');
+            pongCtx = pongCanvas.getContext('2d');
+            
+            pongRunning = true;
+            pongLoop = setInterval(updatePong, 1000/60);
+        }
+
+        function updatePong() {
+            ball.x += ball.dx;
+            ball.y += ball.dy;
+            
+            if (ball.y - ball.radius < 0 || ball.y + ball.radius > 400) {
+                ball.dy *= -1;
+            }
+            
+            if (ball.x - ball.radius < paddle1.x + paddle1.width &&
+                ball.y > paddle1.y && ball.y < paddle1.y + paddle1.height) {
+                ball.dx *= -1;
+                ball.x = paddle1.x + paddle1.width + ball.radius;
+            }
+            
+            if (ball.x + ball.radius > paddle2.x &&
+                ball.y > paddle2.y && ball.y < paddle2.y + paddle2.height) {
+                ball.dx *= -1;
+                ball.x = paddle2.x - ball.radius;
+            }
+            
+            if (ball.x < 0) {
+                paddle2.score++;
+                document.getElementById('aiScore').textContent = paddle2.score;
+                resetBall();
+            }
+            
+            if (ball.x > 600) {
+                paddle1.score++;
+                document.getElementById('playerScore').textContent = paddle1.score;
+                resetBall();
+            }
+            
+            paddle2.y += (ball.y - (paddle2.y + paddle2.height / 2)) * 0.1;
+            paddle2.y = Math.max(0, Math.min(300, paddle2.y));
+            
+            drawPong();
+        }
+
+        function resetBall() {
+            ball.x = 300;
+            ball.y = 200;
+            ball.dx = (Math.random() > 0.5 ? 1 : -1) * 4;
+            ball.dy = (Math.random() * 4 - 2);
+        }
+
+        function drawPong() {
+            pongCtx.fillStyle = document.body.classList.contains('light-mode') ? '#f5f5f5' : '#0a0a0a';
+            pongCtx.fillRect(0, 0, 600, 400);
+            
+            pongCtx.fillStyle = '#fff';
+            pongCtx.fillRect(paddle1.x, paddle1.y, paddle1.width, paddle1.height);
+            pongCtx.fillRect(paddle2.x, paddle2.y, paddle2.width, paddle2.height);
+            
+            pongCtx.beginPath();
+            pongCtx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            pongCtx.fill();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (!pongRunning) return;
+            
+            if ((e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') && paddle1.y > 0) {
+                paddle1.y -= 20;
+            } else if ((e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') && paddle1.y < 300) {
+                paddle1.y += 20;
+            }
+        });
+
+        // Memory Game
+        let memoryCards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let moves = 0;
+
+        function startMemoryGame() {
+            document.querySelector('.interests-grid').style.display = 'none';
+            document.querySelector('.game-intro').style.display = 'none';
+            document.getElementById('memoryContainer').style.display = 'block';
+            
+            const symbols = ['🎮', '🎯', '🎨', '🎭', '🎪', '🎸', '🎲', '🎰'];
+            memoryCards = [...symbols, ...symbols].sort(() => Math.random() - 0.5);
+            
+            const board = document.getElementById('memoryBoard');
+            board.innerHTML = '';
+            
+            memoryCards.forEach((symbol, index) => {
+                const card = document.createElement('div');
+                card.className = 'memory-card';
+                card.dataset.symbol = symbol;
+                card.dataset.index = index;
+                card.addEventListener('click', flipCard);
+                board.appendChild(card);
+            });
+            
+            matchedPairs = 0;
+            moves = 0;
+            document.getElementById('movesCount').textContent = moves;
+            document.getElementById('matchesCount').textContent = matchedPairs;
+        }
+
+        function flipCard() {
+            if (flippedCards.length >= 2 || this.classList.contains('flipped') || this.classList.contains('matched')) {
+                return;
+            }
+            
+            this.classList.add('flipped');
+            this.textContent = this.dataset.symbol;
+            flippedCards.push(this);
+            
+            if (flippedCards.length === 2) {
+                moves++;
+                document.getElementById('movesCount').textContent = moves;
+                
+                setTimeout(checkMatch, 500);
+            }
+        }
+
+        function checkMatch() {
+            const [card1, card2] = flippedCards;
+            
+            if (card1.dataset.symbol === card2.dataset.symbol) {
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                matchedPairs++;
+                document.getElementById('matchesCount').textContent = matchedPairs;
+                
+                if (matchedPairs === 8) {
+                    setTimeout(() => alert(`Congratulations! You won in ${moves} moves!`), 300);
+                }
+            } else {
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+                card1.textContent = '';
+                card2.textContent = '';
+            }
+            
+            flippedCards = [];
         }
     </script>
 </body>
