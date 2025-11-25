@@ -922,40 +922,18 @@
         }
 
        // Loading Screen
-let loadingComplete = false;
-
 window.addEventListener('DOMContentLoaded', function() {
-    if (!loadingComplete) {
-        loadingComplete = true;
-        setTimeout(() => {
-            document.getElementById('loadingScreen').classList.add('hidden');
+    setTimeout(() => {
+        const loadingScreen = document.getElementById('loadingScreen');
+        if (loadingScreen) {
+            loadingScreen.classList.add('hidden');
             setTimeout(() => {
-                document.getElementById('loadingScreen').style.display = 'none';
+                loadingScreen.style.display = 'none';
             }, 500);
-            animateText();
-        }, 1000);
-    }
+        }
+        animateText();
+    }, 1000);
 });
-
-// Backup timeout
-setTimeout(() => {
-    if (!loadingComplete) {
-        loadingComplete = true;
-        document.getElementById('loadingScreen').classList.add('hidden');
-        setTimeout(() => {
-            document.getElementById('loadingScreen').style.display = 'none';
-        }, 500);
-        animateText();
-    }
-}, 2000);
-
-// Backup in case DOMContentLoaded already fired
-setTimeout(() => {
-    if (document.getElementById('loadingScreen') && !document.getElementById('loadingScreen').classList.contains('hidden')) {
-        document.getElementById('loadingScreen').classList.add('hidden');
-        animateText();
-    }
-}, 2000);
 
         function animateText() {
             const elements = document.querySelectorAll('h1, h2, h3, p, li, div');
@@ -1319,14 +1297,15 @@ Phone: 076 238 3148`;
             pongCtx.beginPath();
             pongCtx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
             pongCtx.fill();
+        }
 
         function stopPongGame() {
-    if (pongLoop) {
-        clearInterval(pongLoop);
-        pongRunning = false;
-    }
-    location.reload();
-}
+            if (pongLoop) {
+                clearInterval(pongLoop);
+                pongRunning = false;
+            }
+            location.reload();
+        }
         }
 
         document.addEventListener('keydown', (e) => {
