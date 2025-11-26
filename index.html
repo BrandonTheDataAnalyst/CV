@@ -1261,7 +1261,11 @@ function downloadCV() {
             ball.x = 300;
             ball.y = 200;
             ball.dx = (Math.random() > 0.5 ? 1 : -1) * 4;
-            ball.dy = (Math.random() * 4 - 2);
+            // Ensure dy is always at least 2 in either direction for consistent speed
+            const minSpeed = 2;
+            ball.dy = Math.random() > 0.5 ? 
+                      (Math.random() * 2 + minSpeed) : 
+                      -(Math.random() * 2 + minSpeed);
         }
 
         function drawPong() {
