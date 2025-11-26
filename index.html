@@ -1896,45 +1896,6 @@ function downloadCV() {
     const gameCanvas = document.getElementById('gameCanvas');
     if (gameCanvas) {
         gameCanvas.addEventListener('touchstart', (e) => {
-            if (!gameRunning) return;
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-            snakeTouchProcessed = false;
-            e.preventDefault();
-        }, {passive: false});
-
-        gameCanvas.addEventListener('touchmove', (e) => {
-            if (!gameRunning || snakeTouchProcessed) return;
-            
-            const touchCurrentX = e.touches[0].clientX;
-            const touchCurrentY = e.touches[0].clientY;
-            
-            const deltaX = touchCurrentX - touchStartX;
-            const deltaY = touchCurrentY - touchStartY;
-            
-            const minSwipeDistance = 30;
-            
-            if (Math.abs(deltaX) > minSwipeDistance || Math.abs(deltaY) > minSwipeDistance) {
-                if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                    if (deltaX > 0 && direction.x === 0) {
-                        direction = {x: 20, y: 0};
-                        snakeTouchProcessed = true;
-                    } else if (deltaX < 0 && direction.x === 0) {
-                        direction = {x: -20, y: 0};
-                        snakeTouchProcessed = true;
-                    }
-                } else {
-                    if (deltaY > 0 && direction.y === 0) {
-                        direction = {x: 0, y: 20};
-                        snakeTouchProcessed = true;
-                    } else if (deltaY < 0 && direction.y === 0) {
-                        direction = {x: 0, y: -20};
-                        snakeTouchProcessed = true;
-                    }
-                }
-            }
-            e.preventDefault();
-        }, {passive: false});
     }
 });
             if (!gameRunning) return;
