@@ -1443,56 +1443,76 @@ body.light-mode .photo-item:hover {
 
         // ===== LEADERBOARD FUNCTIONS =====
         async function saveHighScore(game, score) {
-            if (!currentUser || !firebaseInitialized) return;
-            
-            const userSnapshot = await firebase.database().ref('users/' + currentUser.uid).once('value');
-            const userData = userSnapshot.val();
-            
+    if (!currentUser || !firebaseInitialized) return;
+    
+    try {
+        const userSnapshot = await firebase.database().ref('users/' + currentUser.uid).once('value');
+        const userData = userSnapshot.val();
+        
+        // Only save if this is a new high score for this user
+        const currentScoreSnapshot = await firebase.database().ref('leaderboard/' + game + '/' + currentUser.uid).once('value');
+        const currentHighScore = currentScoreSnapshot.exists() ? currentScoreSnapshot.val().score : 0;
+        
+        if (score > currentHighScore) {
             const scoreRef = firebase.database().ref('leaderboard/' + game + '/' + currentUser.uid);
             await scoreRef.set({
-                username: userData.username,
+                username: userData.username || 'Anonymous',
                 score: score,
                 timestamp: Date.now()
             });
             
-            if (game === 'snake') {
-                loadSnakeLeaderboard();
-            }
+            console.log('High score saved:', score);
         }
+        
+        if (game === 'snake') {
+            // Small delay to ensure Firebase has updated
+            setTimeout(() => loadSnakeLeaderboard(), 500);
+        }
+    } catch (error) {
+        console.error('Error saving high score:', error);
+    }
+}
 
         async function loadSnakeLeaderboard() {
-            if (!firebaseInitialized) return;
-            
-            const leaderboardDiv = document.getElementById('snakeLeaderboard');
-            leaderboardDiv.innerHTML = '<div style="text-align: center; color: #888;">Loading...</div>';
-            
-            const snapshot = await firebase.database().ref('leaderboard/snake').orderByChild('score').limitToLast(10).once('value');
-            const scores = [];
-            
-            snapshot.forEach((childSnapshot) => {
-                scores.push({
-                    uid: childSnapshot.key,
-                    ...childSnapshot.val()
-                });
+    if (!firebaseInitialized) return;
+    
+    const leaderboardDiv = document.getElementById('snakeLeaderboard');
+    leaderboardDiv.innerHTML = '<div style="text-align: center; color: #888;">Loading...</div>';
+    
+    try {
+        const snapshot = await firebase.database().ref('leaderboard/snake').orderByChild('score').limitToLast(10).once('value');
+        const scores = [];
+        
+        snapshot.forEach((childSnapshot) => {
+            const data = childSnapshot.val();
+            scores.push({
+                uid: childSnapshot.key,
+                username: data.username || 'Anonymous',
+                score: data.score || 0
             });
-            
-            scores.reverse(); // Highest score first
-            
-            if (scores.length === 0) {
-                leaderboardDiv.innerHTML = '<div style="text-align: center; color: #888;">No scores yet. Be the first!</div>';
-                return;
-            }
-            
-            leaderboardDiv.innerHTML = scores.map((entry, index) => {
-                const isCurrentUser = currentUser && entry.uid === currentUser.uid;
-                return `
-                    <div class="leaderboard-item ${isCurrentUser ? 'current-user' : ''}">
-                        <span><span class="leaderboard-rank">#${index + 1}</span>${entry.username}</span>
-                        <span style="color: #0f0; font-weight: bold;">${entry.score}</span>
-                    </div>
-                `;
-            }).join('');
+        });
+        
+        scores.sort((a, b) => b.score - a.score); // Highest score first
+        
+        if (scores.length === 0) {
+            leaderboardDiv.innerHTML = '<div style="text-align: center; color: #888;">No scores yet. Be the first!</div>';
+            return;
         }
+        
+        leaderboardDiv.innerHTML = scores.map((entry, index) => {
+            const isCurrentUser = currentUser && entry.uid === currentUser.uid;
+            return `
+                <div class="leaderboard-item ${isCurrentUser ? 'current-user' : ''}">
+                    <span><span class="leaderboard-rank">#${index + 1}</span>${entry.username}</span>
+                    <span style="color: #0f0; font-weight: bold;">${entry.score}</span>
+                </div>
+            `;
+        }).join('');
+    } catch (error) {
+        console.error('Error loading leaderboard:', error);
+        leaderboardDiv.innerHTML = '<div style="text-align: center; color: #f00;">Error loading leaderboard</div>';
+    }
+}
 
         // Theme Toggle
         function toggleTheme() {
@@ -1872,7 +1892,51 @@ function downloadCV() {
         let touchStartY = 0;
         let snakeTouchProcessed = false;
 
-        canvas.addEventListener('touchstart', (e) => {
+        document.addEventListener('DOMContentLoaded', () => {
+    const gameCanvas = document.getElementById('gameCanvas');
+    if (gameCanvas) {
+        gameCanvas.addEventListener('touchstart', (e) => {
+            if (!gameRunning) return;
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            snakeTouchProcessed = false;
+            e.preventDefault();
+        }, {passive: false});
+
+        gameCanvas.addEventListener('touchmove', (e) => {
+            if (!gameRunning || snakeTouchProcessed) return;
+            
+            const touchCurrentX = e.touches[0].clientX;
+            const touchCurrentY = e.touches[0].clientY;
+            
+            const deltaX = touchCurrentX - touchStartX;
+            const deltaY = touchCurrentY - touchStartY;
+            
+            const minSwipeDistance = 30;
+            
+            if (Math.abs(deltaX) > minSwipeDistance || Math.abs(deltaY) > minSwipeDistance) {
+                if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                    if (deltaX > 0 && direction.x === 0) {
+                        direction = {x: 20, y: 0};
+                        snakeTouchProcessed = true;
+                    } else if (deltaX < 0 && direction.x === 0) {
+                        direction = {x: -20, y: 0};
+                        snakeTouchProcessed = true;
+                    }
+                } else {
+                    if (deltaY > 0 && direction.y === 0) {
+                        direction = {x: 0, y: 20};
+                        snakeTouchProcessed = true;
+                    } else if (deltaY < 0 && direction.y === 0) {
+                        direction = {x: 0, y: -20};
+                        snakeTouchProcessed = true;
+                    }
+                }
+            }
+            e.preventDefault();
+        }, {passive: false});
+    }
+});
             if (!gameRunning) return;
             touchStartX = e.touches[0].clientX;
             touchStartY = e.touches[0].clientY;
