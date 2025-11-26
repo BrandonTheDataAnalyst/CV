@@ -1156,16 +1156,22 @@ function downloadCV() {
         function changeSnakeDirection(dir) {
             if (!gameRunning) return;
             
-            if (dir === 'up' && direction.y === 0) {
-                direction = {x: 0, y: -20};
-            } else if (dir === 'down' && direction.y === 0) {
-                direction = {x: 0, y: 20};
-            } else if (dir === 'left' && direction.x === 0) {
-                direction = {x: -20, y: 0};
-            } else if (dir === 'right' && direction.x === 0) {
-                direction = {x: 20, y: 0};
+            const newDirections = {
+                'up': {x: 0, y: -20},
+                'down': {x: 0, y: 20},
+                'left': {x: -20, y: 0},
+                'right': {x: 20, y: 0}
+            };
+            
+            const newDir = newDirections[dir];
+            
+            // Prevent reversing direction (can't go opposite to current direction)
+            if ((newDir.x !== 0 && direction.x === 0) || (newDir.y !== 0 && direction.y === 0)) {
+                direction = newDir;
             }
         }
+
+        let pongTouchActive = false;
 
         function movePaddleUp() {
             if (!pongRunning) return;
@@ -1187,18 +1193,37 @@ function downloadCV() {
             }
         });
 
-        // Touch controls for mobile - Pong
+        // Improved touch controls for mobile - Pong
         document.addEventListener('touchstart', (e) => {
-            if (!pongRunning) return;
+            if (!pongRunning || !pongCanvas) return;
+            
             const touch = e.touches[0];
             const rect = pongCanvas.getBoundingClientRect();
             const touchY = touch.clientY - rect.top;
             
-            if (touchY < paddle1.y + paddle1.height / 2) {
-                paddle1.y = Math.max(0, paddle1.y - 40);
-            } else {
-                paddle1.y = Math.min(300, paddle1.y + 40);
+            // Only respond if touch is within canvas
+            if (touchY >= 0 && touchY <= rect.height) {
+                pongTouchActive = true;
+                const targetY = touchY - paddle1.height / 2;
+                paddle1.y = Math.max(0, Math.min(300, targetY));
+                e.preventDefault();
             }
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (!pongRunning || !pongCanvas || !pongTouchActive) return;
+            
+            const touch = e.touches[0];
+            const rect = pongCanvas.getBoundingClientRect();
+            const touchY = touch.clientY - rect.top;
+            
+            const targetY = touchY - paddle1.height / 2;
+            paddle1.y = Math.max(0, Math.min(300, targetY));
+            e.preventDefault();
+        });
+
+        document.addEventListener('touchend', () => {
+            pongTouchActive = false;
         });
 
         // Pong Game
@@ -1303,40 +1328,54 @@ function downloadCV() {
             }
         });
 
-        // Touch/swipe controls for mobile - Snake
+        // Improved touch/swipe controls for mobile - Snake
         let touchStartX = 0;
         let touchStartY = 0;
+        let snakeTouchProcessed = false;
 
-        document.addEventListener('touchstart', (e) => {
+        canvas.addEventListener('touchstart', (e) => {
             if (!gameRunning) return;
             touchStartX = e.touches[0].clientX;
             touchStartY = e.touches[0].clientY;
-        });
+            snakeTouchProcessed = false;
+            e.preventDefault();
+        }, {passive: false});
 
-        document.addEventListener('touchend', (e) => {
-            if (!gameRunning) return;
-            const touchEndX = e.changedTouches[0].clientX;
-            const touchEndY = e.changedTouches[0].clientY;
+        canvas.addEventListener('touchmove', (e) => {
+            if (!gameRunning || snakeTouchProcessed) return;
             
-            const deltaX = touchEndX - touchStartX;
-            const deltaY = touchEndY - touchStartY;
+            const touchCurrentX = e.touches[0].clientX;
+            const touchCurrentY = e.touches[0].clientY;
             
-            if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                // Horizontal swipe
-                if (deltaX > 0 && direction.x === 0) {
-                    direction = {x: 20, y: 0}; // Right
-                } else if (deltaX < 0 && direction.x === 0) {
-                    direction = {x: -20, y: 0}; // Left
-                }
-            } else {
-                // Vertical swipe
-                if (deltaY > 0 && direction.y === 0) {
-                    direction = {x: 0, y: 20}; // Down
-                } else if (deltaY < 0 && direction.y === 0) {
-                    direction = {x: 0, y: -20}; // Up
+            const deltaX = touchCurrentX - touchStartX;
+            const deltaY = touchCurrentY - touchStartY;
+            
+            // Require minimum swipe distance (30 pixels) to register
+            const minSwipeDistance = 30;
+            
+            if (Math.abs(deltaX) > minSwipeDistance || Math.abs(deltaY) > minSwipeDistance) {
+                if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                    // Horizontal swipe
+                    if (deltaX > 0 && direction.x === 0) {
+                        direction = {x: 20, y: 0}; // Right
+                        snakeTouchProcessed = true;
+                    } else if (deltaX < 0 && direction.x === 0) {
+                        direction = {x: -20, y: 0}; // Left
+                        snakeTouchProcessed = true;
+                    }
+                } else {
+                    // Vertical swipe
+                    if (deltaY > 0 && direction.y === 0) {
+                        direction = {x: 0, y: 20}; // Down
+                        snakeTouchProcessed = true;
+                    } else if (deltaY < 0 && direction.y === 0) {
+                        direction = {x: 0, y: -20}; // Up
+                        snakeTouchProcessed = true;
+                    }
                 }
             }
-        });
+            e.preventDefault();
+        }, {passive: false});
 
         // Memory Game
         let memoryCards = [];
