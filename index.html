@@ -1443,16 +1443,27 @@ body.light-mode .photo-item:hover {
 
         // ===== LEADERBOARD FUNCTIONS =====
         async function saveHighScore(game, score) {
-    if (!currentUser || !firebaseInitialized) return;
+    if (!currentUser || !firebaseInitialized) {
+        console.log('Cannot save: user not logged in or Firebase not initialized');
+        return;
+    }
     
     try {
         const userSnapshot = await firebase.database().ref('users/' + currentUser.uid).once('value');
         const userData = userSnapshot.val();
         
-        // Only save if this is a new high score for this user
+        if (!userData) {
+            console.error('User data not found');
+            return;
+        }
+        
+        // Get current high score from Firebase
         const currentScoreSnapshot = await firebase.database().ref('leaderboard/' + game + '/' + currentUser.uid).once('value');
         const currentHighScore = currentScoreSnapshot.exists() ? currentScoreSnapshot.val().score : 0;
         
+        console.log('Current Firebase high score:', currentHighScore, 'New score:', score);
+        
+        // Always save if it's a new high score
         if (score > currentHighScore) {
             const scoreRef = firebase.database().ref('leaderboard/' + game + '/' + currentUser.uid);
             await scoreRef.set({
@@ -1461,12 +1472,14 @@ body.light-mode .photo-item:hover {
                 timestamp: Date.now()
             });
             
-            console.log('High score saved:', score);
-        }
-        
-        if (game === 'snake') {
-            // Small delay to ensure Firebase has updated
-            setTimeout(() => loadSnakeLeaderboard(), 500);
+            console.log('High score saved to Firebase:', score);
+            
+            // Reload leaderboard after successful save
+            if (game === 'snake') {
+                setTimeout(() => loadSnakeLeaderboard(), 1000);
+            }
+        } else {
+            console.log('Score not high enough to save');
         }
     } catch (error) {
         console.error('Error saving high score:', error);
@@ -1693,17 +1706,24 @@ function downloadCV() {
             ctx.fillRect(food.x, food.y, 18, 18);
         }
 
-        function gameOver() {
+        async function gameOver() {
             clearInterval(gameLoop);
             gameRunning = false;
             
             // Save high score to Firebase if logged in
             if (currentUser && score > 0) {
-                const userHighScore = parseInt(localStorage.getItem('snakeHighScore_' + currentUser.uid) || '0');
-                if (score > userHighScore) {
-                    localStorage.setItem('snakeHighScore_' + currentUser.uid, score);
-                    saveHighScore('snake', score);
+                console.log('Game over - saving score:', score);
+                
+                // Update localStorage
+                const storageKey = 'snakeHighScore_' + currentUser.uid;
+                const localHighScore = parseInt(localStorage.getItem(storageKey) || '0');
+                if (score > localHighScore) {
+                    localStorage.setItem(storageKey, score);
+                    document.getElementById('highScore').textContent = score;
                 }
+                
+                // Save to Firebase (this will check if it's a high score)
+                await saveHighScore('snake', score);
             }
             
             alert(`Game Over! Your score: ${score}`);
