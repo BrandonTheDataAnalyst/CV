@@ -931,37 +931,27 @@
                     <p>Classic paddle game - try to beat the AI!</p>
                 </div>
                 <div class="interest-item" style="cursor: pointer;" onclick="startMemoryGame()">
-    <h3>🧠 Memory Match</h3>
-    <p>Test your memory with this card matching game - flip cards to find matching pairs!</p>
-        </div>
+                    <h3>🧠 Memory Match</h3>
+                    <p>Test your memory with this card matching game - flip cards to find matching pairs!</p>
+                </div>
             </div>
 
             <div id="pongContainer" style="display: none; margin-top: 30px;">
-    <h2 style="text-align: center;">Pong Game</h2>
-    <div class="score-display" style="display: block; text-align: center;">
-        Player: <span id="playerScore">0</span> | AI: <span id="aiScore">0</span>
-    </div>
-    <canvas id="pongCanvas" width="600" height="400" style="display: block;"></canvas>
-    <div class="game-controls" style="text-align: center;">
-        <p>Use W/S, Arrow Keys, or buttons below to move your paddle</p>
-        <div class="control-buttons active pong-controls" id="pongControls">
-            <button class="arrow-btn" onclick="movePaddleUp()">↑</button>
-            <button class="arrow-btn" onclick="movePaddleDown()">↓</button>
-        </div>
-        <button class="start-game-btn" onclick="stopPongGame()" style="background-color: #f00; margin-right: 10px; margin-top: 20px;">Stop Game</button>
-        <button class="start-game-btn" onclick="location.reload()" style="margin-top: 20px;">Back to Games</button>
-    </div>
-<div id="memoryContainer" style="display: none; margin-top: 30px;">
-    <h2 style="text-align: center;">Memory Match</h2>
-    <div class="score-display" style="display: block; text-align: center;">
-        Moves: <span id="movesCount">0</span> | Matches: <span id="matchesCount">0</span>
-    </div>
-    <div id="memoryBoard" style="display: grid; grid-template-columns: repeat(4, 100px); gap: 15px; justify-content: center; margin: 30px auto;"></div>
-    <div class="game-controls" style="text-align: center;">
-        <p>Click cards to flip them and find matching pairs!</p>
-        <button class="start-game-btn" onclick="location.reload()">Back to Games</button>
-    </div>
-</div>
+                <h2 style="text-align: center;">Pong Game</h2>
+                <div class="score-display" style="display: block; text-align: center;">
+                    Player: <span id="playerScore">0</span> | AI: <span id="aiScore">0</span>
+                </div>
+                <canvas id="pongCanvas" width="600" height="400" style="display: block;"></canvas>
+                <div class="game-controls" style="text-align: center;">
+                    <p>Use W/S, Arrow Keys, or buttons below to move your paddle</p>
+                    <div class="control-buttons active pong-controls" id="pongControls">
+                        <button class="arrow-btn" onclick="movePaddleUp()">↑</button>
+                        <button class="arrow-btn" onclick="movePaddleDown()">↓</button>
+                    </div>
+                    <button class="start-game-btn" onclick="stopPongGame()" style="background-color: #f00; margin-right: 10px; margin-top: 20px;">Stop Game</button>
+                    <button class="start-game-btn" onclick="location.reload()" style="margin-top: 20px;">Back to Games</button>
+                </div>
+            </div>
 
             <div id="memoryContainer" style="display: none; margin-top: 30px;">
                 <h2 style="text-align: center;">Memory Match</h2>
@@ -970,6 +960,7 @@
                 </div>
                 <div id="memoryBoard" style="display: grid; grid-template-columns: repeat(4, 100px); gap: 15px; justify-content: center; margin: 30px auto;"></div>
                 <div class="game-controls" style="text-align: center;">
+                    <p>Click cards to flip them and find matching pairs!</p>
                     <button class="start-game-btn" onclick="location.reload()">Back to Games</button>
                 </div>
             </div>
