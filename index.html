@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Brandon Feinauer - Portfolio</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <style>
         * {
             margin: 0;
@@ -489,6 +493,201 @@
             color: #0f0;
         }
 
+        /* Auth Modal Styles */
+        .auth-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .auth-modal.active {
+            display: flex;
+        }
+
+        .auth-container {
+            background-color: #1a1a1a;
+            padding: 40px;
+            border-radius: 10px;
+            border: 2px solid #0f0;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        body.light-mode .auth-container {
+            background-color: #fff;
+            border-color: #000;
+        }
+
+        .auth-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #0f0;
+        }
+
+        body.light-mode .auth-container h2 {
+            color: #000;
+        }
+
+        .auth-input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background-color: #0a0a0a;
+            border: 1px solid #555;
+            color: #fff;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        body.light-mode .auth-input {
+            background-color: #f5f5f5;
+            color: #000;
+            border-color: #999;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background-color: #0f0;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .auth-btn:hover {
+            background-color: #0c0;
+            transform: scale(1.02);
+        }
+
+        .auth-toggle {
+            text-align: center;
+            margin-top: 20px;
+            color: #888;
+            cursor: pointer;
+        }
+
+        .auth-toggle:hover {
+            color: #0f0;
+        }
+
+        .close-auth {
+            float: right;
+            font-size: 28px;
+            cursor: pointer;
+            color: #888;
+        }
+
+        .close-auth:hover {
+            color: #0f0;
+        }
+
+        .user-info {
+            display: none;
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background-color: #1a1a1a;
+            padding: 15px 20px;
+            border-radius: 5px;
+            border: 1px solid #0f0;
+            z-index: 999;
+        }
+
+        body.light-mode .user-info {
+            background-color: #fff;
+            border-color: #000;
+        }
+
+        .user-info.active {
+            display: block;
+        }
+
+        .logout-btn {
+            background-color: #f00;
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .logout-btn:hover {
+            background-color: #c00;
+        }
+
+        .leaderboard {
+            background-color: #1a1a1a;
+            padding: 20px;
+            border-radius: 5px;
+            border-left: 4px solid #0f0;
+            margin: 20px 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        body.light-mode .leaderboard {
+            background-color: #fff;
+            border-color: #000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #0a0a0a;
+            border-radius: 3px;
+        }
+
+        body.light-mode .leaderboard-item {
+            background-color: #f5f5f5;
+        }
+
+        .leaderboard-item.current-user {
+            border: 2px solid #0f0;
+        }
+
+        .leaderboard-rank {
+            font-weight: bold;
+            color: #0f0;
+            margin-right: 10px;
+        }
+
+        .auth-error {
+            color: #f00;
+            text-align: center;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .login-prompt {
+            text-align: center;
+            padding: 30px;
+            background-color: #1a1a1a;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        body.light-mode .login-prompt {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
         .memory-card {
             width: 100px;
             height: 100px;
@@ -658,9 +857,34 @@
             <button onclick="showPage('references')">References</button>
             <button onclick="showPage('game')" style="border-color: #0f0; color: #0f0;">Bored?</button>
             <button onclick="showPage('games')" style="border-color: #0f0; color: #0f0;">More Games</button>
+            <button onclick="showAuthModal()" id="authNavBtn" style="border-color: #ff0; color: #ff0;">Login</button>
         </div>
         <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
     </nav>
+
+    </nav>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="auth-modal">
+        <div class="auth-container">
+            <span class="close-auth" onclick="closeAuthModal()">&times;</span>
+            <h2 id="authTitle">Login</h2>
+            <div class="auth-error" id="authError"></div>
+            <input type="text" id="authUsername" class="auth-input" placeholder="Username" style="display: none;" />
+            <input type="email" id="authEmail" class="auth-input" placeholder="Email" />
+            <input type="password" id="authPassword" class="auth-input" placeholder="Password" />
+            <button class="auth-btn" id="authSubmitBtn" onclick="handleAuth()">Login</button>
+            <div class="auth-toggle" id="authToggle" onclick="toggleAuthMode()">
+                Don't have an account? <span style="color: #0f0;">Sign Up</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Info Display -->
+    <div id="userInfo" class="user-info">
+        <div>👤 <span id="displayUsername"></span></div>
+        <button class="logout-btn" onclick="handleLogout()">Logout</button>
+    </div>
 
     <div id="about" class="page active">
         <div class="container">
@@ -893,6 +1117,20 @@
                 <p>Got bored reading my CV? No stress, take a break and check this out!</p>
             </div>
             
+            <!-- Leaderboard Section -->
+            <div id="snakeLeaderboardSection" style="display: none;">
+                <h2 style="text-align: center;">🏆 Top Players</h2>
+                <div class="leaderboard" id="snakeLeaderboard">
+                    <div style="text-align: center; color: #888;">Loading leaderboard...</div>
+                </div>
+            </div>
+
+            <div id="loginPromptSnake" class="login-prompt">
+                <h3>🔒 Login to Save Your High Score!</h3>
+                <p>Create an account to compete on the leaderboard</p>
+                <button class="start-game-btn" onclick="showAuthModal()">Login / Sign Up</button>
+            </div>
+            
             <div class="score-display" id="scoreDisplay">
                 Score: <span id="currentScore">0</span> | High Score: <span class="high-score" id="highScore">0</span>
             </div>
@@ -968,6 +1206,219 @@
     </div>
 
     <script>
+        <script>
+        // ===== FIREBASE CONFIGURATION =====
+        const firebaseConfig = {
+            apiKey: "AIzaSyApC9jV6i_YXX27wo0wJPleLZi8rWwGpyU",
+            authDomain: "brandontheanalystcv.firebaseapp.com",
+            databaseURL: "https://brandontheanalystcv-default-rtdb.firebaseio.com",
+            projectId: "brandontheanalystcv",
+            storageBucket: "brandontheanalystcv.firebasestorage.app",
+            messagingSenderId: "75976722274",
+            appId: "1:75976722274:web:2cf2823afa619853b14e3b"
+        };
+
+        // Initialize Firebase
+        let firebaseInitialized = false;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            firebaseInitialized = true;
+            console.log("Firebase initialized successfully");
+        } catch (error) {
+            console.error("Firebase initialization error:", error);
+        }
+
+        let currentUser = null;
+        let isLoginMode = true;
+
+        // ===== AUTH FUNCTIONS =====
+        function showAuthModal() {
+            document.getElementById('authModal').classList.add('active');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.remove('active');
+            document.getElementById('authError').style.display = 'none';
+        }
+
+        function toggleAuthMode() {
+            isLoginMode = !isLoginMode;
+            const title = document.getElementById('authTitle');
+            const submitBtn = document.getElementById('authSubmitBtn');
+            const toggle = document.getElementById('authToggle');
+            const usernameInput = document.getElementById('authUsername');
+            
+            if (isLoginMode) {
+                title.textContent = 'Login';
+                submitBtn.textContent = 'Login';
+                toggle.innerHTML = 'Don\'t have an account? <span style="color: #0f0;">Sign Up</span>';
+                usernameInput.style.display = 'none';
+            } else {
+                title.textContent = 'Sign Up';
+                submitBtn.textContent = 'Sign Up';
+                toggle.innerHTML = 'Already have an account? <span style="color: #0f0;">Login</span>';
+                usernameInput.style.display = 'block';
+            }
+        }
+
+        async function handleAuth() {
+            if (!firebaseInitialized) {
+                showAuthError('Firebase not configured. Please add your Firebase config.');
+                return;
+            }
+
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+            const username = document.getElementById('authUsername').value;
+            
+            if (!email || !password) {
+                showAuthError('Please fill in all fields');
+                return;
+            }
+
+            if (!isLoginMode && !username) {
+                showAuthError('Please enter a username');
+                return;
+            }
+
+            try {
+                if (isLoginMode) {
+                    // Login
+                    const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+                    currentUser = userCredential.user;
+                    await loadUserData();
+                } else {
+                    // Sign up
+                    const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+                    currentUser = userCredential.user;
+                    
+                    // Save username to database
+                    await firebase.database().ref('users/' + currentUser.uid).set({
+                        username: username,
+                        email: email,
+                        createdAt: Date.now()
+                    });
+                    
+                    await loadUserData();
+                }
+                
+                closeAuthModal();
+                updateUIForLoggedInUser();
+            } catch (error) {
+                showAuthError(error.message);
+            }
+        }
+
+        function showAuthError(message) {
+            const errorDiv = document.getElementById('authError');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        async function loadUserData() {
+            if (!currentUser) return;
+            
+            const snapshot = await firebase.database().ref('users/' + currentUser.uid).once('value');
+            const userData = snapshot.val();
+            
+            if (userData) {
+                document.getElementById('displayUsername').textContent = userData.username;
+            }
+        }
+
+        function handleLogout() {
+            firebase.auth().signOut();
+            currentUser = null;
+            updateUIForLoggedOutUser();
+        }
+
+        function updateUIForLoggedInUser() {
+            document.getElementById('authNavBtn').textContent = '👤 Profile';
+            document.getElementById('authNavBtn').onclick = toggleUserInfo;
+            document.getElementById('userInfo').classList.add('active');
+            document.getElementById('loginPromptSnake').style.display = 'none';
+            document.getElementById('snakeLeaderboardSection').style.display = 'block';
+            loadSnakeLeaderboard();
+        }
+
+        function updateUIForLoggedOutUser() {
+            document.getElementById('authNavBtn').textContent = 'Login';
+            document.getElementById('authNavBtn').onclick = showAuthModal;
+            document.getElementById('userInfo').classList.remove('active');
+            document.getElementById('loginPromptSnake').style.display = 'block';
+            document.getElementById('snakeLeaderboardSection').style.display = 'none';
+        }
+
+        function toggleUserInfo() {
+            document.getElementById('userInfo').classList.toggle('active');
+        }
+
+        // Check auth state on load
+        if (firebaseInitialized) {
+            firebase.auth().onAuthStateChanged(async (user) => {
+                if (user) {
+                    currentUser = user;
+                    await loadUserData();
+                    updateUIForLoggedInUser();
+                } else {
+                    updateUIForLoggedOutUser();
+                }
+            });
+        }
+
+        // ===== LEADERBOARD FUNCTIONS =====
+        async function saveHighScore(game, score) {
+            if (!currentUser || !firebaseInitialized) return;
+            
+            const userSnapshot = await firebase.database().ref('users/' + currentUser.uid).once('value');
+            const userData = userSnapshot.val();
+            
+            const scoreRef = firebase.database().ref('leaderboard/' + game + '/' + currentUser.uid);
+            await scoreRef.set({
+                username: userData.username,
+                score: score,
+                timestamp: Date.now()
+            });
+            
+            if (game === 'snake') {
+                loadSnakeLeaderboard();
+            }
+        }
+
+        async function loadSnakeLeaderboard() {
+            if (!firebaseInitialized) return;
+            
+            const leaderboardDiv = document.getElementById('snakeLeaderboard');
+            leaderboardDiv.innerHTML = '<div style="text-align: center; color: #888;">Loading...</div>';
+            
+            const snapshot = await firebase.database().ref('leaderboard/snake').orderByChild('score').limitToLast(10).once('value');
+            const scores = [];
+            
+            snapshot.forEach((childSnapshot) => {
+                scores.push({
+                    uid: childSnapshot.key,
+                    ...childSnapshot.val()
+                });
+            });
+            
+            scores.reverse(); // Highest score first
+            
+            if (scores.length === 0) {
+                leaderboardDiv.innerHTML = '<div style="text-align: center; color: #888;">No scores yet. Be the first!</div>';
+                return;
+            }
+            
+            leaderboardDiv.innerHTML = scores.map((entry, index) => {
+                const isCurrentUser = currentUser && entry.uid === currentUser.uid;
+                return `
+                    <div class="leaderboard-item ${isCurrentUser ? 'current-user' : ''}">
+                        <span><span class="leaderboard-rank">#${index + 1}</span>${entry.username}</span>
+                        <span style="color: #0f0; font-weight: bold;">${entry.score}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
         // Theme Toggle
         function toggleTheme() {
             document.body.classList.toggle('light-mode');
@@ -1081,7 +1532,9 @@ function downloadCV() {
             document.getElementById('scoreDisplay').style.display = 'block';
             document.getElementById('snakeControls').classList.add('active');
             
-            highScore = localStorage.getItem('snakeHighScore') || 0;
+            // Load high score from localStorage (per user if logged in)
+            const storageKey = currentUser ? 'snakeHighScore_' + currentUser.uid : 'snakeHighScore';
+            highScore = localStorage.getItem(storageKey) || 0;
             document.getElementById('highScore').textContent = highScore;
             
             resetGame();
@@ -1120,7 +1573,8 @@ function downloadCV() {
                 document.getElementById('currentScore').textContent = score;
                 if (score > highScore) {
                     highScore = score;
-                    localStorage.setItem('snakeHighScore', highScore);
+                    const storageKey = currentUser ? 'snakeHighScore_' + currentUser.uid : 'snakeHighScore';
+                    localStorage.setItem(storageKey, highScore);
                     document.getElementById('highScore').textContent = highScore;
                 }
                 placeFood();
@@ -1147,6 +1601,16 @@ function downloadCV() {
         function gameOver() {
             clearInterval(gameLoop);
             gameRunning = false;
+            
+            // Save high score to Firebase if logged in
+            if (currentUser && score > 0) {
+                const userHighScore = parseInt(localStorage.getItem('snakeHighScore_' + currentUser.uid) || '0');
+                if (score > userHighScore) {
+                    localStorage.setItem('snakeHighScore_' + currentUser.uid, score);
+                    saveHighScore('snake', score);
+                }
+            }
+            
             alert(`Game Over! Your score: ${score}`);
             canvas.style.display = 'none';
             document.getElementById('startBtn').style.display = 'inline-flex';
