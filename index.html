@@ -1896,6 +1896,47 @@ function downloadCV() {
     const gameCanvas = document.getElementById('gameCanvas');
     if (gameCanvas) {
         gameCanvas.addEventListener('touchstart', (e) => {
+            if (!gameRunning) return;
+            
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            snakeTouchProcessed = false;
+            e.preventDefault();
+        });
+
+        gameCanvas.addEventListener('touchmove', (e) => {
+            if (!gameRunning || snakeTouchProcessed) return;
+            
+            const touchEndX = e.touches[0].clientX;
+            const touchEndY = e.touches[0].clientY;
+            
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+            
+            // Only register swipe if movement is significant (at least 30px)
+            if (Math.abs(deltaX) > 30 || Math.abs(deltaY) > 30) {
+                if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                    // Horizontal swipe
+                    if (deltaX > 0 && direction.x === 0) {
+                        direction = {x: 20, y: 0}; // Right
+                        snakeTouchProcessed = true;
+                    } else if (deltaX < 0 && direction.x === 0) {
+                        direction = {x: -20, y: 0}; // Left
+                        snakeTouchProcessed = true;
+                    }
+                } else {
+                    // Vertical swipe
+                    if (deltaY > 0 && direction.y === 0) {
+                        direction = {x: 0, y: 20}; // Down
+                        snakeTouchProcessed = true;
+                    } else if (deltaY < 0 && direction.y === 0) {
+                        direction = {x: 0, y: -20}; // Up
+                        snakeTouchProcessed = true;
+                    }
+                }
+            }
+            e.preventDefault();
+        });
     }
 });
 
